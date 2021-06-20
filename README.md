@@ -1,5 +1,5 @@
 # My-Camps
-Proyecto de practica, Sitio web enfocado en mostrar información de campamentos.
+Sitio web enfocado en mostrar información de campamentos.
 
 Tecnologias utilizadas:
 * HTML 5 
