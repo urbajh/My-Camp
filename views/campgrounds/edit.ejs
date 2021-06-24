@@ -1,10 +1,48 @@
 <%- layout('layouts/boilerplate')%>
-<h1>Edit Campground</h1>
-<form action="/campgrounds/<%=camp._id%>?_method=PUT" method="POST">
-    <label for="title"></label>
-    <input type="text" id='title' name='campground[title]' value=<%= camp.title %>>
-    <label for="location"></label>
-    <input type="text" id='location' name='campground[location]' value=<%= camp.location%>>
-    <button type="submit">Submit</button>
-</form>
-<a href="/campgrounds/<%= camp._id%>"> back to <%=camp.title %></a>
+<div class="row">
+    <div class="col-6 offset-3">
+        <h1 class="text-center">Edit Campground</h1>
+        <form action="/campgrounds/<%=camp._id%>?_method=PUT" method="POST" novalidate class="validate-form">
+            <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
+                <input class="form-control" type="text" id='title' name='campground[title]' required value=<%= camp.title %> > 
+                <div class="valid-feedback">
+                    Good!.
+                </div>
+                <div class="invalid-feedback">
+                    Please enter a title.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="location">Location</label>
+                <input class="form-control" type="text" id='location' name='campground[location]' required value='<%=camp.location%>' >
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="price">Price</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input class="form-control" type="number" id='price' name='campground[price]' value="<%=camp.price%>" required>
+                    <span class="input-group-text">.00</span>
+                    <div class="valid-feedback">
+                        Good!.
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter a price.
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="url-image">Image Url</label>
+                <input type="text" class="form-control" id="url-image" name='campground[image]' required value=<%= camp.image%>>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" name="campground[description]" id="description" cols="30" rows="5" required><%= camp.description %></textarea>
+            </div>
+            <div class="mb-3 d-flex justify-content-between">
+                <a class="btn btn-secondary" href="/campgrounds/<%= camp._id%>"> Back to <%=camp.title %></a>
+                <button class="btn btn-success" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
