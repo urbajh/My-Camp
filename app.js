@@ -7,7 +7,8 @@ const catchAsyncError = require('./utils/catchAsyncError');
 const ExpressError = require('./utils/ExpressError')
 const mongoose = require('mongoose');
 const Campground = require('./models/campground');
-const Joi =require('joi')
+//Joi Schema
+const validateInfoCampground = require('./utils/joiSchemas')
 
 mongoose.connect('mongodb://localhost:27017/my-camps', {
     useNewUrlParser: true,
@@ -39,22 +40,10 @@ app.get('/campgrounds', catchAsyncError( async (req, res)=>{
 app.get('/campgrounds/new', (req, res)=>{
     res.render('campgrounds/new');
 })
-app.post('/campgrounds', catchAsyncError( async (req, res)=>{
-    /*const campgroundSchema = Joi.object({
-        title: Joi.String().required(),
-        price: Joi.number().min(10).required()
-    })
-
-    campgroundSchema.validate(req.body.campground)
-
-    console.log('SCHEMA--', campgroundSchema)
-*/
-    if(!req.body.campground) throw new ExpressError('invalid campground data', 400)
+app.post('/campgrounds', validateInfoCampground, catchAsyncError( async (req, res)=>{
     const {campground} = req.body;
     const newCamp = await new Campground(campground);
     newCamp.save();
-    //console.log('campground',campground);
-    //console.log('req.body',req.body);
     res.redirect('/campgrounds');
     }
 ) )
@@ -70,7 +59,7 @@ app.get('/campgrounds/edit/:id', catchAsyncError( async(req, res)=>{
     res.render('campgrounds/edit', {camp});
 }))
 
-app.put('/campgrounds/:id', catchAsyncError(async (req, res)=>{
+app.put('/campgrounds/:id', validateInfoCampground, catchAsyncError(async (req, res)=>{
     const {id} = req.params;
     const {campground} = req.body;
     const camp = await Campground.findByIdAndUpdate(id,campground, {new:true});
@@ -92,9 +81,9 @@ app.all('*',(req, res, next)=>{
 app.use((err, req, res, next)=>{
     console.log('log ERROR----------------------',err)
     console.dir('dir ERROR----------------------',err)
+    if(!err.status) err.status = 500
     if(!err.message) err.message = "Something went wrong"
-//    let {message="Something went wrong" , status=500} = err
-    res.status(status).render('error', {err});
+    res.status(err.status).render('error', {err});
 })
 
 app.listen(3000, () => {
